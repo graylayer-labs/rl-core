@@ -7,6 +7,19 @@ A `breaking` label on the GitHub PR signals a major version bump.
 
 ---
 
+## Unreleased
+
+### Added
+- Paper-reproduction specification loader and validation command
+- DQN 2015 reproduction protocol scaffold with explicit planned status
+- Classic Control benchmark definition and empty leaderboard schema
+- Scientific methodology for claims, implementation reuse, deviations, and negative results
+- MIT license, citation metadata, and complete package metadata
+
+### Changed
+- Repositioned rl-core from a shared dependency to a self-contained RL research playground
+- Updated contributor and agent guidance around reproducibility and benchmark integrity
+
 ## [v1.0.0] - 2026-03-28
 
 First stable release. Public API is now considered settled.

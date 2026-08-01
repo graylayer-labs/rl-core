@@ -1,0 +1,23 @@
+schema_version: 1
+key: classic-control-v1
+title: Classic Control
+description: Fast correctness and learning-signal checks for discrete-control algorithms.
+environments:
+  - id: CartPole-v1
+    capability: dense-reward balance and basic sample efficiency
+  - id: Acrobot-v1
+    capability: delayed progress and longer-horizon credit assignment
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_steps
+  value: 200000
+evaluation:
+  episodes: 20
+  deterministic: true
+metrics:
+  primary: mean_episode_return
+  report:
+    - mean_episode_return
+    - return_standard_deviation
+    - environment_steps
+    - wall_clock_seconds

@@ -7,11 +7,11 @@ labels: bug
 ## Affected module
 <!-- e.g. rl_core.experiments.RunManager, rl_core.algorithms.dqn.DQNTrainer -->
 
-## Reporting repo
-<!-- Which consuming repo surfaced this? rl-evo-lab / lang-conditioned-control / rl-core tests -->
-
 ## rl-core version
 <!-- git tag or commit SHA you're pinned to -->
+
+## Affected reproduction
+<!-- Paper key or benchmark, if the bug affects recorded results. -->
 
 ## What happened?
 <!-- Describe the incorrect behaviour. -->

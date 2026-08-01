@@ -1,6 +1,7 @@
 # Maintaining rl-core
 
-This document is for the maintainer of rl-core. It covers day-to-day development, the release process, and how to handle breaking changes safely across consuming repos.
+This document covers day-to-day development, paper reproductions, releases,
+and breaking changes.
 
 ---
 
@@ -117,9 +118,11 @@ git tag vX.Y.Z
 git push origin main --tags
 ```
 
-### Step 5 — notify consuming repos
+### Step 5 — update affected protocols
 
-If the release includes anything labelled `breaking`, open a PR or leave a note in the consuming repo pointing to the CHANGELOG entry and listing what needs updating.
+If a release changes algorithm behavior, record the implementation version in
+affected paper findings and rerun any protocol whose result is no longer
+comparable.
 
 ---
 
@@ -135,7 +138,7 @@ A change is **breaking** if it does any of the following to anything in a public
 ### Checklist before merging a breaking PR
 
 1. Label the PR `breaking`
-2. In the PR description, list every consuming repo and exactly what they'll need to change
+2. In the PR description, list affected algorithms, protocols, and migration steps
 3. Add a `### Removed` or `### Changed` entry to CHANGELOG with a migration note:
    ```markdown
    ### Changed
@@ -143,7 +146,7 @@ A change is **breaking** if it does any of the following to anything in a public
      **Migration:** swap argument order in all call sites.
    ```
 4. Bump major version
-5. After merging, update consuming repos' pins or open issues in them
+5. After merging, rerun or invalidate affected reproduction results
 
 ---
 
@@ -168,11 +171,22 @@ Metric keys returned by `train_step` should follow the `loss/`, `q/`, `entropy/`
 
 Add tests under `tests/algorithms/test_myalgo.py` before opening the PR.
 
+Then add a paper reproduction under `papers/<paper-key>/`:
+
+- `reproduction.yaml` freezes the claim, implementation source, seeds, budget,
+  metric, and criterion
+- `README.md` explains the paper and scope in human terms
+- `findings.md` records results, deviations, and final status
+
+Prefer a maintained implementation such as Stable-Baselines3 when it supports
+the protocol. Add custom trainer code only when the research question requires
+it. Run `poetry run python -m rl_core.reproductions validate` before committing.
+
 ---
 
 ## Adding to rl_core.experiments
 
-The experiments module is the most likely place consuming repos will need extensions. Common requests:
+The experiments module owns shared run lifecycle behavior. Common extensions:
 
 - New status fields in `status.json` — add to `_write_status`, backwards compatible
 - New checkpoint metadata — add to `ExperimentRun.checkpoint()`, backwards compatible

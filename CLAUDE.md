@@ -27,16 +27,18 @@ poetry run pytest tests/path/to/test_file.py -v
 poetry run pytest tests/ -k "test_name" -v
 ```
 
-## Repo purpose and consumers
+## Repository purpose
 
-`rl-core` is a **shared library** consumed by two sibling repos as a pinned GitHub dependency:
+`rl-core` is a paper-reproduction and benchmarking lab. It evaluates specific
+claims from established RL research under declared protocols.
 
-| Repo | Purpose | Pin |
-|------|---------|-----|
-| `../rl-evo-lab` | Evolutionary RL (EDER — ES actor + DQN learner) | `@vX.Y.Z` in pyproject.toml |
-| `../lang-conditioned-control` | Language-conditioned continuous control (SAC) | `@vX.Y.Z` in pyproject.toml |
+Prefer maintained implementations such as Stable-Baselines3 when they cover the
+required behavior. Write custom algorithm code only for unsupported
+paper-specific components, controlled modifications, instrumentation, or new
+research ideas. Do not rebuild an RL framework for its own sake.
 
-Any change to a public API in rl-core may break consuming repos. Before modifying any existing public symbol, check what the consuming repos import and how they use it.
+Sibling research repositories (`rl-evo-lab` and `lang-goal-rl`) are
+intentionally independent rather than consumers of this package.
 
 ## Module layout
 
@@ -63,6 +65,11 @@ rl_core/
     └── sac/
         ├── network.py        # GaussianPolicy (shared trunk + mean/log_std heads), TwinQNetwork
         └── trainer.py        # SACConfig (frozen dataclass) + SACTrainer
+
+papers/                       # one declared claim and protocol per paper
+benchmarks/                   # fixed cross-algorithm evaluation tracks
+results/                      # aggregate, reviewable result summaries
+docs/methodology.md            # scientific and reporting rules
 ```
 
 ## Key design decisions
@@ -83,6 +90,23 @@ rl_core/
 
 **DQN** uses soft target-network updates (Polyak averaging via `tau`) rather than periodic hard copies.
 
+## Reproduction rules
+
+- Say “reproduce a claim,” not “prove a paper.”
+- Freeze the claim, seeds, budget, metric, and success criterion before
+  qualifying results are recorded.
+- Record whether an implementation is external, local, or hybrid.
+- Keep original-testbed results separate from standard-benchmark results.
+- Never mark a protocol `reproduced` without completing every declared seed.
+- Report negative, partial, and inconclusive outcomes.
+- Do not add placeholder scores to `results/leaderboard.csv`.
+
+Validate specifications with:
+
+```bash
+poetry run python -m rl_core.reproductions validate
+```
+
 ## Versioning rules
 
 This repo uses semver with git tags. Understand these before modifying public APIs:
@@ -97,7 +121,7 @@ This repo uses semver with git tags. Understand these before modifying public AP
 
 When asked to make a breaking change:
 1. Label the PR `breaking`
-2. List which consuming repos are affected and what they need to update
+2. List affected algorithms and reproduction protocols
 3. Add a migration note to the CHANGELOG entry
 4. Bump major version in `pyproject.toml`
 
@@ -121,11 +145,15 @@ New algorithms go in `rl_core/algorithms/<name>/` and must:
 - Return metric keys from `train_step` using `loss/`, `q/`, `entropy/` prefixes
 - Have tests in `tests/algorithms/test_myalgo.py`
 - Be exported from `rl_core/algorithms/<name>/__init__.py`
+- Have a paper protocol under `papers/<paper-key>/reproduction.yaml`
+- State one measurable claim and any deviations before qualifying runs
 
 ## What NOT to do
 
 - Do not modify existing public function signatures without a breaking PR and major version bump
 - Do not push directly to `main` — use a branch and PR
 - Do not merge without all three checks passing (ruff, ty, pytest)
-- Do not add dependencies to `[project]` without checking if consuming repos would be affected
+- Do not add dependencies to `[project]` until a runnable experiment needs them
 - Do not write tests that depend on wandb being installed — mock it or skip
+- Do not tune success criteria after inspecting qualifying results
+- Do not combine unrelated environment families into a universal score
