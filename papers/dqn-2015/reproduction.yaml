@@ -1,0 +1,30 @@
+schema_version: 1
+key: dqn-2015
+paper:
+  title: Human-level control through deep reinforcement learning
+  authors:
+    - Volodymyr Mnih
+    - Koray Kavukcuoglu
+    - David Silver
+  year: 2015
+  url: https://doi.org/10.1038/nature14236
+algorithm: dqn
+implementation: stable_baselines3.DQN
+implementation_kind: external
+claim: >-
+  DQN can reach human-comparable performance from visual observations across
+  a representative declared subset of Atari 2600 games.
+original_testbed: Arcade Learning Environment
+status: planned
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_frames
+  value: 50000000
+primary_metric: human_normalized_score
+success_criterion: >-
+  Meet or exceed the paper's reported human-normalized score on a majority of
+  the declared Atari subset without post-hoc seed or game selection.
+deviations:
+  - Stable-Baselines3 is the planned maintained backend; its defaults must be reconciled with the paper.
+  - The exact Atari subset is not yet frozen; status must remain planned until it is.
+  - Hardware and current ALE versions will differ from the 2015 implementation.

@@ -1,7 +1,7 @@
 [project]
 name = "rl-core"
 version = "1.0.0"
-description = "Shared infrastructure for reinforcement learning research"
+description = "Reproducible experiments and benchmarks for reinforcement-learning research"
 authors = [
     {name = "eoinmcallister",email = "eoinmc.james@gmail.com"}
 ]
@@ -23,4 +23,3 @@ build-backend = "poetry.core.masonry.api"
 ruff = "^0.15.8"
 ty = "^0.0.26"
 pytest = "^9.0.2"
-
