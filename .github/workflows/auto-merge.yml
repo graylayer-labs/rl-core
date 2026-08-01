@@ -1,8 +1,7 @@
 name: Auto-merge
 
 # When all CI checks pass on a PR, merge it automatically.
-# This only fires for PRs opened against main — direct pushes to main
-# are blocked by branch protection (see CONTRIBUTING.md).
+# This only fires for PRs opened against main.
 
 on:
   workflow_run:

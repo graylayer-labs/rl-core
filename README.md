@@ -114,7 +114,3 @@ multiple experiments demonstrate the same stable need.
 The reproduction framework and DQN protocol are now scaffolded, but no paper
 claim is marked as reproduced yet. The leaderboard intentionally contains no
 scores until runs satisfying the declared protocols have completed.
-
-## License
-
-MIT
