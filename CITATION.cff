@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: If you use this repository, cite the repository and the original papers for the algorithms evaluated.
+title: "rl-core: Reproducible reinforcement-learning experiments and benchmarks"
+type: software
+authors:
+  - family-names: McAllister
+    given-names: Eoin
+repository-code: https://github.com/graylayer-labs/rl-core
+license: MIT
+version: 1.0.0
+date-released: 2026-03-28

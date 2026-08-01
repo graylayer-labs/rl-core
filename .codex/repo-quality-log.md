@@ -29,6 +29,8 @@ no qualifying reproduction has run yet.
 - Added DQN 2015 protocol, Classic Control benchmark, results policy, and empty leaderboard.
 - Replaced stale shared-library and consumer guidance.
 - Corrected package version metadata from 0.1.0 to 1.0.0.
+- Added MIT license, citation metadata, and complete Python project metadata.
+- Aligned GitHub description, topics, merge behavior, security, and branch policy.
 - Verified 26 tests plus full Ruff, formatting, and Ty checks.
 
 ### Next

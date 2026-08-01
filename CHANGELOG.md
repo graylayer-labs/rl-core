@@ -14,6 +14,7 @@ A `breaking` label on the GitHub PR signals a major version bump.
 - DQN 2015 reproduction protocol scaffold with explicit planned status
 - Classic Control benchmark definition and empty leaderboard schema
 - Scientific methodology for claims, implementation reuse, deviations, and negative results
+- MIT license, citation metadata, and complete package metadata
 
 ### Changed
 - Repositioned rl-core from a shared dependency to a self-contained RL research playground
