@@ -15,5 +15,4 @@
 - [ ] `poetry run python -m rl_core.reproductions validate` passes
 - [ ] `poetry run pytest tests/ -v` passes
 - [ ] Claims, deviations, and result status remain accurate
-- [ ] CHANGELOG.md updated
 - [ ] Version bumped in `pyproject.toml` if this is a release PR

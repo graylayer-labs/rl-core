@@ -11,7 +11,7 @@ now has a scientific protocol layer but no completed reproduction.
 - [x] Prefer maintained implementations and document when custom code is justified.
 - [x] Add validated reproduction metadata and an honest empty result structure.
 - [x] Define the first small standard benchmark.
-- [x] Align public GitHub metadata, repository settings, license, and citation details.
+- [x] Align public GitHub metadata and repository settings.
 - [ ] Select and pin a Stable-Baselines3 version for the first runnable experiment.
 - [ ] Add a thin adapter that records config, dependency versions, commit, hardware,
       seeds, environment steps, and wall-clock time.

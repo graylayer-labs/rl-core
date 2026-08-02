@@ -47,8 +47,7 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Claude Code — commit project-level config, keep local settings private
-# CLAUDE.md and .claude/commands/ are project docs and should be committed
+# Keep local Claude settings private
 .claude/settings.local.json
 
 # Experiment outputs (kept local)
