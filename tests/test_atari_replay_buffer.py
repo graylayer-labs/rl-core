@@ -45,3 +45,37 @@ def test_atari_replay_requires_a_reset_and_uint8_frames():
         buffer.append(0, 0.0, _frame(1), False)
     with pytest.raises(TypeError, match="uint8"):
         buffer.begin_episode(np.ones((2, 2), dtype=np.float32))
+
+
+def test_atari_replay_samples_after_ring_wrap_without_full_scan():
+    buffer = AtariReplayBuffer(capacity=16, frame_shape=(2, 2), stack_size=4, seed=2)
+    buffer.begin_episode(_frame(0))
+    for step in range(40):
+        buffer.append(action=step % 2, reward=float(step), next_frame=_frame(step + 1), done=False)
+
+    batch = buffer.sample(16, "cpu")
+
+    assert len(buffer) == 16
+    assert batch["obs"].shape == (16, 4, 2, 2)
+    assert torch.all(batch["done"] == 0)
+
+
+def test_atari_replay_sampling_work_is_independent_of_capacity(monkeypatch):
+    buffer = AtariReplayBuffer(capacity=1_000_000, frame_shape=(2, 2), seed=3)
+    buffer.begin_episode(_frame(1))
+    for step in range(64):
+        buffer.append(action=0, reward=0.0, next_frame=_frame(step + 2), done=False)
+
+    sampled_candidate_counts: list[int] = []
+    original_integers = buffer._rng.integers
+
+    class _CountingRng:
+        def integers(self, *args, **kwargs):
+            result = original_integers(*args, **kwargs)
+            sampled_candidate_counts.append(int(result.size))
+            return result
+
+    monkeypatch.setattr(buffer, "_rng", _CountingRng())
+    buffer.sample(32, "cpu")
+
+    assert sum(sampled_candidate_counts) <= 64

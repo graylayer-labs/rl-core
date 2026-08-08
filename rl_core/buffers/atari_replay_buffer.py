@@ -107,7 +107,7 @@ class AtariReplayBuffer:
             raise ValueError("batch_size must be positive")
         if batch_size > self._size:
             raise ValueError(f"Requested batch of {batch_size} but only {self._size} transitions are available")
-        slots = self._rng.choice(self._valid_slots(), size=batch_size, replace=True)
+        slots = self._sample_slots(batch_size)
         observations = np.stack([self._stack_for(self._transition_frame_ids[slot]) for slot in slots])
         next_observations = np.zeros_like(observations)
         for output_index, slot in enumerate(slots):
@@ -135,17 +135,36 @@ class AtariReplayBuffer:
         self._next_frame_id += 1
         return frame_id
 
-    def _valid_slots(self) -> np.ndarray:
-        slots = np.flatnonzero(self._transition_frame_ids >= 0)
-        valid: list[int] = []
-        for slot in slots:
-            frame_id = self._transition_frame_ids[slot]
-            next_frame_id = self._next_frame_ids[slot]
-            if self._has_frame(frame_id) and (self._dones[slot] or self._has_frame(next_frame_id)):
-                valid.append(int(slot))
-        if not valid:
-            raise RuntimeError("No reconstructable transitions are available")
-        return np.asarray(valid, dtype=np.intp)
+    def _sample_slots(self, batch_size: int) -> np.ndarray:
+        """Sample reconstructable slots in time proportional to batch size.
+
+        Live transitions occupy ``[0, size)`` until the ring fills and every
+        slot thereafter. Frame-ring overwrite can make a few boundary entries
+        temporarily unreconstructable, so candidates are rejected in vectorized
+        batches rather than finding every valid slot on every optimizer update.
+        """
+        upper_bound = self._capacity if self._size == self._capacity else self._size
+        selected: list[np.ndarray] = []
+        selected_count = 0
+        for _ in range(32):
+            remaining = batch_size - selected_count
+            candidate_count = max(remaining * 2, 8)
+            candidates = self._rng.integers(0, upper_bound, size=candidate_count, dtype=np.intp)
+            frame_ids = self._transition_frame_ids[candidates]
+            frame_slots = np.mod(frame_ids, self._frame_capacity)
+            current_valid = (frame_ids >= 0) & (self._frame_ids[frame_slots] == frame_ids)
+            next_frame_ids = self._next_frame_ids[candidates]
+            next_slots = np.mod(np.maximum(next_frame_ids, 0), self._frame_capacity)
+            next_valid = self._dones[candidates] | (
+                (next_frame_ids >= 0) & (self._frame_ids[next_slots] == next_frame_ids)
+            )
+            accepted = candidates[current_valid & next_valid][:remaining]
+            if accepted.size:
+                selected.append(accepted)
+                selected_count += int(accepted.size)
+            if selected_count == batch_size:
+                return np.concatenate(selected)
+        raise RuntimeError("Unable to sample enough reconstructable transitions")
 
     def _has_frame(self, frame_id: int) -> bool:
         return frame_id >= 0 and self._frame_ids[frame_id % self._frame_capacity] == frame_id
