@@ -10,6 +10,7 @@ import yaml
 
 VALID_STATUSES = frozenset({"planned", "running", "partial", "reproduced", "not_reproduced"})
 VALID_IMPLEMENTATION_KINDS = frozenset({"external", "local", "hybrid"})
+VALID_BUDGET_UNITS = frozenset({"environment_frames", "environment_steps"})
 
 
 class SpecValidationError(ValueError):
@@ -35,6 +36,28 @@ class Budget:
 
 
 @dataclass(frozen=True)
+class Game:
+    """One preregistered environment in a reproduction protocol."""
+
+    id: str
+    config: str
+    random_score: float
+    human_score: float
+    paper_score: float
+
+
+@dataclass(frozen=True)
+class Protocol:
+    """Versioned operational details needed to interpret a paper result."""
+
+    version: int
+    games: tuple[Game, ...]
+    frame_skip: int
+    no_op_max: int
+    evaluation_epsilon: float
+
+
+@dataclass(frozen=True)
 class ReproductionSpec:
     """Validated, machine-readable protocol for one paper claim."""
 
@@ -52,6 +75,7 @@ class ReproductionSpec:
     primary_metric: str
     success_criterion: str
     deviations: tuple[str, ...]
+    protocol: Protocol
 
 
 def load_reproduction_spec(path: Path | str) -> ReproductionSpec:
@@ -68,6 +92,8 @@ def load_reproduction_spec(path: Path | str) -> ReproductionSpec:
         implementation_kind = _string(raw, "implementation_kind")
         seeds = _integer_list(raw, "seeds")
         deviations = _string_list(raw, "deviations")
+        protocol_raw = _mapping(raw, "protocol")
+        games_raw = protocol_raw.get("games")
 
         if status not in VALID_STATUSES:
             allowed = ", ".join(sorted(VALID_STATUSES))
@@ -77,6 +103,17 @@ def load_reproduction_spec(path: Path | str) -> ReproductionSpec:
             raise SpecValidationError(f"{spec_path}: implementation_kind must be one of: {allowed}")
         if len(set(seeds)) != len(seeds):
             raise SpecValidationError(f"{spec_path}: seeds must be unique")
+        if not isinstance(games_raw, list) or not games_raw:
+            raise SpecValidationError("'games' must be a non-empty list")
+        games = tuple(_game(_mapping_item(game, "games")) for game in games_raw)
+        if len({game.id for game in games}) != len(games):
+            raise SpecValidationError(f"{spec_path}: game ids must be unique")
+        if len({game.config for game in games}) != len(games):
+            raise SpecValidationError(f"{spec_path}: game configs must be unique")
+        budget_unit = _string(budget_raw, "unit")
+        if budget_unit not in VALID_BUDGET_UNITS:
+            allowed = ", ".join(sorted(VALID_BUDGET_UNITS))
+            raise SpecValidationError(f"{spec_path}: budget unit must be one of: {allowed}")
 
         return ReproductionSpec(
             schema_version=_integer(raw, "schema_version"),
@@ -95,12 +132,19 @@ def load_reproduction_spec(path: Path | str) -> ReproductionSpec:
             status=status,
             seeds=seeds,
             budget=Budget(
-                unit=_string(budget_raw, "unit"),
+                unit=budget_unit,
                 value=_positive_integer(budget_raw, "value"),
             ),
             primary_metric=_string(raw, "primary_metric"),
             success_criterion=_string(raw, "success_criterion"),
             deviations=deviations,
+            protocol=Protocol(
+                version=_positive_integer(protocol_raw, "version"),
+                games=games,
+                frame_skip=_positive_integer(protocol_raw, "frame_skip"),
+                no_op_max=_nonnegative_integer(protocol_raw, "no_op_max"),
+                evaluation_epsilon=_probability(protocol_raw, "evaluation_epsilon"),
+            ),
         )
     except SpecValidationError:
         raise
@@ -118,6 +162,25 @@ def _mapping(data: dict[str, Any], key: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise SpecValidationError(f"{key!r} must be a mapping")
     return value
+
+
+def _mapping_item(value: Any, key: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise SpecValidationError(f"{key!r} must contain mappings")
+    return value
+
+
+def _game(data: dict[str, Any]) -> Game:
+    game = Game(
+        id=_string(data, "id"),
+        config=_string(data, "config"),
+        random_score=_number(data, "random_score"),
+        human_score=_number(data, "human_score"),
+        paper_score=_number(data, "paper_score"),
+    )
+    if game.human_score == game.random_score:
+        raise SpecValidationError(f"{game.id}: human_score must differ from random_score")
+    return game
 
 
 def _string(data: dict[str, Any], key: str) -> str:
@@ -139,6 +202,27 @@ def _positive_integer(data: dict[str, Any], key: str) -> int:
     if value <= 0:
         raise SpecValidationError(f"{key!r} must be positive")
     return value
+
+
+def _nonnegative_integer(data: dict[str, Any], key: str) -> int:
+    value = _integer(data, key)
+    if value < 0:
+        raise SpecValidationError(f"{key!r} must be non-negative")
+    return value
+
+
+def _probability(data: dict[str, Any], key: str) -> float:
+    value = data.get(key)
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not 0 <= value <= 1:
+        raise SpecValidationError(f"{key!r} must be a number between 0 and 1")
+    return float(value)
+
+
+def _number(data: dict[str, Any], key: str) -> float:
+    value = data.get(key)
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise SpecValidationError(f"{key!r} must be a number")
+    return float(value)
 
 
 def _string_list(data: dict[str, Any], key: str) -> tuple[str, ...]:

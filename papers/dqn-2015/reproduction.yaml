@@ -9,8 +9,8 @@ paper:
   year: 2015
   url: https://doi.org/10.1038/nature14236
 algorithm: dqn
-implementation: stable_baselines3.DQN
-implementation_kind: external
+implementation: rl_core.integrations.NatureDQN
+implementation_kind: local
 claim: >-
   DQN can reach human-comparable performance from visual observations across
   a representative declared subset of Atari 2600 games.
@@ -18,13 +18,47 @@ original_testbed: Arcade Learning Environment
 status: planned
 seeds: [7, 42, 123, 2026, 9001]
 budget:
-  unit: environment_frames
+  # The paper's 50M "frames" are action-selection steps. At a four-frame action
+  # repeat, each qualifying run consumes 200M raw ALE frames.
+  unit: environment_steps
   value: 50000000
 primary_metric: human_normalized_score
 success_criterion: >-
   Meet or exceed the paper's reported human-normalized score on a majority of
   the declared Atari subset without post-hoc seed or game selection.
 deviations:
-  - Stable-Baselines3 is the planned maintained backend; its defaults must be reconciled with the paper.
-  - The exact Atari subset is not yet frozen; status must remain planned until it is.
+  - A compact local update path is used because maintained DQN backends do not expose the paper's replay and optimizer semantics.
+  - The five-game subset is a preregistered sample, not the paper's complete 49-game evaluation suite.
   - Hardware and current ALE versions will differ from the 2015 implementation.
+protocol:
+  version: 1
+  games:
+    - id: ALE/BeamRider-v5
+      config: configs/beam_rider.yaml
+      random_score: 363.9
+      human_score: 5774.7
+      paper_score: 6846.0
+    - id: ALE/Breakout-v5
+      config: configs/breakout.yaml
+      random_score: 1.7
+      human_score: 31.8
+      paper_score: 401.2
+    - id: ALE/Pong-v5
+      config: configs/pong.yaml
+      random_score: -20.7
+      human_score: 9.3
+      paper_score: 18.9
+    - id: ALE/Seaquest-v5
+      config: configs/seaquest.yaml
+      random_score: 68.4
+      human_score: 20181.8
+      paper_score: 5286.0
+    - id: ALE/SpaceInvaders-v5
+      config: configs/space_invaders.yaml
+      random_score: 148.0
+      human_score: 1652.0
+      paper_score: 1976.0
+  # One environment step is one repeated agent action and consumes four ALE frames.
+  frame_skip: 4
+  no_op_max: 30
+  evaluation_epsilon: 0.05

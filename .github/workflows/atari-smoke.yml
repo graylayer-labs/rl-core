@@ -1,0 +1,30 @@
+name: Atari integration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  preflight-and-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install Atari dependencies
+        run: poetry install --with dev,atari --no-interaction
+
+      - name: Verify Atari protocol
+        run: poetry run python -m rl_core.reproductions preflight dqn-2015
+
+      - name: Run nonqualifying Pong smoke
+        run: >-
+          poetry run python -m rl_core.reproductions run dqn-2015
+          --preset smoke --environment ALE/Pong-v5 --seed 7

@@ -1,0 +1,61 @@
+schema_version: 1
+key: rainbow-2018
+paper:
+  title: "Rainbow: Combining Improvements in Deep Reinforcement Learning"
+  authors:
+    - Matteo Hessel
+    - Joseph Modayil
+    - Hado van Hasselt
+  year: 2018
+  url: https://doi.org/10.1609/aaai.v32i1.11796
+algorithm: rainbow
+implementation: rl_core.algorithms.rainbow.Rainbow
+implementation_kind: local
+claim: >-
+  The combined Rainbow agent improves Atari learning by composing six individually
+  switchable DQN extensions under a frozen five-game protocol.
+original_testbed: Arcade Learning Environment
+status: planned
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_steps
+  value: 50000000
+primary_metric: human_normalized_score
+success_criterion: >-
+  Meet or exceed the declared paper reference score on a majority of the frozen
+  five-game subset, without post-hoc seed or game selection.
+deviations:
+  - The five-game subset is preregistered rather than the paper's full 57-game benchmark.
+  - Current ALE, PyTorch, and hardware differ from the original implementation.
+  - The local runner records final-checkpoint raw-score evidence rather than report-selected checkpoints.
+protocol:
+  version: 1
+  games:
+    - id: ALE/BeamRider-v5
+      config: configs/beam_rider.yaml
+      random_score: 363.9
+      human_score: 5774.7
+      paper_score: 16850.0
+    - id: ALE/Breakout-v5
+      config: configs/breakout.yaml
+      random_score: 1.7
+      human_score: 31.8
+      paper_score: 417.5
+    - id: ALE/Pong-v5
+      config: configs/pong.yaml
+      random_score: -20.7
+      human_score: 9.3
+      paper_score: 20.9
+    - id: ALE/Seaquest-v5
+      config: configs/seaquest.yaml
+      random_score: 68.4
+      human_score: 20181.8
+      paper_score: 17780.0
+    - id: ALE/SpaceInvaders-v5
+      config: configs/space_invaders.yaml
+      random_score: 148.0
+      human_score: 1652.0
+      paper_score: 21439.0
+  frame_skip: 4
+  no_op_max: 30
+  evaluation_epsilon: 0.001

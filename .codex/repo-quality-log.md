@@ -1,5 +1,66 @@
 # Repository quality log
 
+## 2026-08-03
+
+**Verdict:** Strong multi-paper research foundation. DQN, Rainbow, PPO, RND,
+and NGU have validated protocols, preflights, focused implementations, artifact
+paths, and nonqualifying readiness workflows. No qualifying reproduction claim
+has been run.
+
+**Scorecard:** purpose 5/5 · README 5/5 · run simplicity 4/5 · readability 4/5
+· structure 5/5 · docs 5/5 · tests 5/5 · CI 4/5 · dependency/artifact hygiene
+4/5 — **41/45**
+
+### Strengths
+
+- Paper-reproduction and standard-benchmark claims remain clearly separated.
+- The DQN paper protocol freezes its five validation games, seeds, budgets,
+  training/evaluation semantics, and per-game configurations.
+- The codebase is small, readable, and free of tracked generated artifacts.
+- Real ALE preflight succeeds for every declared ROM and a final-format Pong
+  smoke run completes training, checkpointing, evaluation, and artifacts.
+- Poetry lock validation, reproduction validation, Ruff, formatting, Ty, and
+  all 79 tests pass locally.
+- A registry exposes all five workflows without forcing their learners through
+  one algorithm interface.
+
+### Active concerns
+
+- The complete 25-run qualifying matrix is expensive and has not begun.
+- Cross-seed paper aggregation is implemented; benchmark leaderboard generation
+  is implemented but intentionally empty until benchmark artifacts exist.
+- Qualifying resume is intentionally prohibited until ALE/wrapper state can be
+  restored exactly.
+- RND is component-ready but still needs its paper-scale distributed PPO/ALE
+  learner before any qualifying Montezuma claim.
+- NGU intentionally targets the paper's Random Disco Maze mechanism; full
+  distributed Atari NGU remains out of scope.
+
+### Completed since last audit
+
+- Added pinned optional Atari dependencies and five-game frozen configs.
+- Added paper-oriented Atari wrappers, deduplicated replay, centered RMSProp,
+  Nature CNN/DQN updates, evaluation, preflight, and CLI runner.
+- Added immutable manifests/results, safe provenance, qualification gates, and
+  a manual Atari integration workflow.
+- Added published reference scores and objective cross-seed majority aggregation.
+- Added Rainbow's six switchable components and prioritized n-step replay.
+- Added PPO, GAE, vector collection, and a separate A2C objective.
+- Added RND novelty/normalization and NGU episodic novelty, inverse dynamics,
+  and Random Disco Maze.
+- Added shared workflow dispatch, dense/sparse benchmark definitions, and
+  benchmark-only leaderboard generation.
+- Completed a real-ROM Pong smoke run; it was correctly marked nonqualifying.
+
+### Next
+
+Run one reduced-budget pilot per track, beginning with DQN and Rainbow. Use the
+pilot evidence to estimate compute and harden long-run operations before
+scheduling qualifying matrices.
+
+**Trend:** Core quality remains healthy and the repository expanded from one
+operational paper track to a coherent five-paper research arc.
+
 ## 2026-08-01
 
 **Verdict:** Strong engineering baseline, now repositioned as an honest

@@ -1,0 +1,41 @@
+schema_version: 1
+key: ngu-2020
+paper:
+  title: Never Give Up - Learning Directed Exploration Strategies
+  authors:
+    - Adrià Puigdomènech Badia
+    - Pablo Sprechmann
+    - Alex Vitvitskyi
+    - Daniel Guo
+  year: 2020
+  url: https://arxiv.org/abs/2002.06038
+algorithm: never_give_up
+implementation: rl_core.intrinsic.ngu.EpisodicKNNNovelty
+implementation_kind: local
+claim: >-
+  Episodic novelty in a controllable representation can improve coverage in a
+  sparse local maze; lifelong RND novelty is compared as a declared variant.
+original_testbed: Random Network Distillation and Atari sparse-reward tasks
+status: planned
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_steps
+  value: 20000
+primary_metric: unique_cells_visited
+success_criterion: >-
+  Aggregate all declared seeds and report coverage for both random and RND
+  lifelong-novelty variants without selecting the better variant post hoc.
+deviations:
+  - The 21x21 Random Disco Maze is a local diagnostic testbed, not an Atari result.
+  - The readiness runner does not yet train the full distributed NGU agent.
+protocol:
+  version: 1
+  games:
+    - id: RandomDiscoMaze-21x21-v1
+      config: configs/random_disco_maze.yaml
+      random_score: 1.0
+      human_score: 361.0
+      paper_score: 1.0
+  frame_skip: 1
+  no_op_max: 0
+  evaluation_epsilon: 0.0

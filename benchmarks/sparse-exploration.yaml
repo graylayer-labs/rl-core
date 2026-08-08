@@ -1,0 +1,15 @@
+schema_version: 1
+key: sparse-exploration-v1
+title: Sparse-Reward Exploration
+description: Coverage-oriented comparisons for intrinsic-motivation mechanisms.
+tracks:
+  - id: montezuma-rooms
+    environment: ALE/MontezumaRevenge-v5
+    primary_metric: unique_room_count
+  - id: random-disco-maze
+    environment: RandomDiscoMaze-v0
+    primary_metric: unique_position_coverage
+seeds: [7, 42, 123, 2026, 9001]
+policy:
+  paper protocols and benchmark budgets remain separate
+  results from different tracks are never aggregated into one score
