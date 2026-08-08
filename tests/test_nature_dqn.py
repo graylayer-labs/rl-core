@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 import torch
 
 from rl_core.integrations import NatureDQN, NatureDQNConfig, NatureQNetwork
@@ -51,3 +52,8 @@ def test_nature_dqn_epsilon_one_uses_caller_owned_random_generator():
     action = dqn.select_action(np.zeros((4, 84, 84), dtype=np.uint8), epsilon=1.0, rng=rng)
 
     assert 0 <= action < 3
+
+
+def test_nature_dqn_uses_paper_rmsprop_momentum():
+    dqn = NatureDQN(NatureDQNConfig(action_dim=2))
+    assert dqn.optimizer.param_groups[0]["momentum"] == pytest.approx(0.95)

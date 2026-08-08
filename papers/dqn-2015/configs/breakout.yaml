@@ -17,6 +17,7 @@ training:
   optimizer: rmsprop
   rmsprop_alpha: 0.95
   rmsprop_epsilon: 0.01
+  rmsprop_momentum: 0.95
   replay_buffer_size: 1000000
   learning_starts_agent_steps: 50000
   train_frequency_agent_steps: 4

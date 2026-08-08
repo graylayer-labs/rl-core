@@ -52,4 +52,5 @@ def test_status_write_is_atomic_and_reports_progress(tmp_path) -> None:
     assert status["status"] == "running"
     assert status["agent_step"] == 100
     assert status["agent_steps_per_second"] > 0
+    assert status["latest_training_metrics"] == {}
     assert not (tmp_path / "status.json.tmp").exists()

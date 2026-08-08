@@ -45,6 +45,7 @@ def test_dqn_protocol_is_frozen_to_five_games() -> None:
         assert config["protocol_version"] == spec.protocol.version
         assert config["training_agent_steps"] == spec.budget.value
         assert config["training_raw_ale_frames"] == 200_000_000
+        assert config["training"]["rmsprop_momentum"] == pytest.approx(0.95)
 
 
 def test_load_reproduction_spec_rejects_duplicate_seeds(tmp_path: Path) -> None:

@@ -55,6 +55,7 @@ class NatureDQNConfig:
     learning_rate: float = 0.00025
     rmsprop_alpha: float = 0.95
     rmsprop_epsilon: float = 0.01
+    rmsprop_momentum: float = 0.95
     target_update_interval: int = 10_000
 
     def __post_init__(self) -> None:
@@ -88,6 +89,7 @@ class NatureDQN:
             lr=config.learning_rate,
             alpha=config.rmsprop_alpha,
             eps=config.rmsprop_epsilon,
+            momentum=config.rmsprop_momentum,
         )
         self.optimizer_updates = 0
 
