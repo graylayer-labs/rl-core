@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import json
+from time import monotonic
+
 import pytest
 
 from rl_core.reproductions.dqn_2015.config import exploration_epsilon, load_dqn_run_config
 from rl_core.reproductions.dqn_2015.evaluation import EvaluationSummary
+from rl_core.reproductions.dqn_2015.runner import _write_status
 
 
 def test_smoke_config_is_small_and_permanently_separate() -> None:
@@ -40,3 +44,12 @@ def test_evaluation_summary_preserves_raw_evidence() -> None:
     summary = EvaluationSummary(returns=(1.0, 3.0), lengths=(10, 20))
     assert summary.mean_return == pytest.approx(2.0)
     assert summary.return_std == pytest.approx(1.0)
+
+
+def test_status_write_is_atomic_and_reports_progress(tmp_path) -> None:
+    _write_status(tmp_path, "running", 100, monotonic() - 2.0)
+    status = json.loads((tmp_path / "status.json").read_text())
+    assert status["status"] == "running"
+    assert status["agent_step"] == 100
+    assert status["agent_steps_per_second"] > 0
+    assert not (tmp_path / "status.json.tmp").exists()

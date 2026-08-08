@@ -43,6 +43,26 @@ def _run_id(config: DQNRunConfig, commit: str | None) -> str:
     return f"dqn-2015__{config.preset}__{name}__seed{config.seed}__{digest}"
 
 
+def _write_status(run_dir: Path, status: str, agent_step: int, started: float) -> None:
+    """Atomically expose long-run progress without changing immutable evidence."""
+    status_path = run_dir / "status.json"
+    temporary = status_path.with_suffix(".json.tmp")
+    elapsed = monotonic() - started
+    temporary.write_text(
+        json.dumps(
+            {
+                "status": status,
+                "agent_step": agent_step,
+                "elapsed_seconds": elapsed,
+                "agent_steps_per_second": agent_step / elapsed if elapsed else 0.0,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    temporary.replace(status_path)
+
+
 def run_dqn_2015(
     environment_id: str,
     seed: int,
@@ -101,9 +121,14 @@ def run_dqn_2015(
     )
     replay = AtariReplayBuffer(config.replay_capacity, seed=seed)
     started = monotonic()
+    checkpoint_dir = run_dir / "checkpoints"
+    checkpoint_dir.mkdir(parents=True, exist_ok=True)
+    status_frequency = max(config.agent_steps // 100, 1)
+    checkpoint_frequency = {"smoke": 256, "pilot": 100_000, "qualifying": 1_000_000}[preset]
     observation, _ = environment.reset(seed=seed)
     replay.begin_episode(np.asarray(observation)[-1])
     episode_return = 0.0
+    _write_status(run_dir, "running", 0, started)
     try:
         for agent_step in range(1, config.agent_steps + 1):
             action = agent.select_action(np.asarray(observation), exploration_epsilon(agent_step - 1), rng)
@@ -118,11 +143,22 @@ def run_dqn_2015(
                 observation, _ = environment.reset()
                 replay.begin_episode(np.asarray(observation)[-1])
                 episode_return = 0.0
+            if agent_step % status_frequency == 0:
+                _write_status(run_dir, "running", agent_step, started)
+                elapsed = monotonic() - started
+                print(
+                    f"progress: {agent_step}/{config.agent_steps} agent steps ({agent_step / elapsed:.1f} steps/s)",
+                    flush=True,
+                )
+            if agent_step % checkpoint_frequency == 0:
+                torch.save(agent.state_dicts(), checkpoint_dir / f"step_{agent_step:09d}.pt")
+    except KeyboardInterrupt:
+        torch.save(agent.state_dicts(), checkpoint_dir / f"interrupted_step_{agent_step:09d}.pt")
+        _write_status(run_dir, "interrupted", agent_step, started)
+        raise
     finally:
         environment.close()
 
-    checkpoint_dir = run_dir / "checkpoints"
-    checkpoint_dir.mkdir(parents=True, exist_ok=True)
     torch.save(agent.state_dicts(), checkpoint_dir / "final.pt")
     summary = evaluate(
         agent,
@@ -158,6 +194,7 @@ def run_dqn_2015(
         provenance={"evaluation_seed": seed + 1_000_000, "resumed": False},
     )
     result.write(run_dir / "result.json")
+    _write_status(run_dir, "completed", config.agent_steps, started)
     decision = qualify_result(manifest, result)
     (run_dir / "qualification.json").write_text(
         json.dumps({"qualified": decision.qualified, "reasons": decision.reasons}, indent=2) + "\n"
