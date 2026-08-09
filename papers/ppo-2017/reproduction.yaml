@@ -1,0 +1,61 @@
+schema_version: 1
+key: ppo-2017
+paper:
+  title: Proximal Policy Optimization Algorithms
+  authors:
+    - John Schulman
+    - Filip Wolski
+    - Prafulla Dhariwal
+  year: 2017
+  url: https://arxiv.org/abs/1707.06347
+algorithm: clipped_ppo
+implementation: rl_core.algorithms.ppo.PPOTrainer
+implementation_kind: local
+claim: >-
+  Clipped PPO can learn Atari control with a fixed, preregistered protocol and
+  vectorized on-policy rollouts.
+original_testbed: Arcade Learning Environment
+status: planned
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_steps
+  value: 10000000
+primary_metric: human_normalized_score
+success_criterion: >-
+  Meet or exceed the preregistered paper-reference score on a majority of the
+  declared Atari subset without changing games, seeds, or budgets post hoc.
+deviations:
+  - The frozen five-game subset is not the full Atari suite reported in the paper.
+  - Current ALE, Gymnasium, and hardware differ from the original implementation.
+  - The local runner uses synchronous in-process environments for auditable rollout order.
+protocol:
+  version: 1
+  games:
+    - id: ALE/BeamRider-v5
+      config: configs/beam_rider.yaml
+      random_score: 363.9
+      human_score: 5774.7
+      paper_score: 2467.2
+    - id: ALE/Breakout-v5
+      config: configs/breakout.yaml
+      random_score: 1.7
+      human_score: 31.8
+      paper_score: 394.1
+    - id: ALE/Pong-v5
+      config: configs/pong.yaml
+      random_score: -20.7
+      human_score: 9.3
+      paper_score: 20.7
+    - id: ALE/Seaquest-v5
+      config: configs/seaquest.yaml
+      random_score: 68.4
+      human_score: 20181.8
+      paper_score: 1336.9
+    - id: ALE/SpaceInvaders-v5
+      config: configs/space_invaders.yaml
+      random_score: 148.0
+      human_score: 1652.0
+      paper_score: 1789.0
+  frame_skip: 4
+  no_op_max: 30
+  evaluation_epsilon: 0.0

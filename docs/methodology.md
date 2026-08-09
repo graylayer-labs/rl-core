@@ -6,6 +6,12 @@ A reproduction targets a specific, measurable claim from a paper. It does not
 attempt to validate every conclusion in the paper, and a successful run does
 not prove the algorithm generally correct or superior.
 
+Some papers make full-system claims whose original compute or distributed
+infrastructure is impractical for the initial track. A declared
+`mechanism_replication` may test an experiment from the paper at smaller scale,
+but it must never be reported as reproducing the full system. NGU's Random
+Disco Maze track follows this rule.
+
 Each reproduction is evaluated in two contexts:
 
 1. **Original-testbed track:** match the paper's environment, preprocessing,
@@ -64,8 +70,19 @@ Report all declared seeds. Summaries should include the central tendency,
 dispersion or confidence interval, environment steps, wall-clock time, hardware,
 dependency lockfile, and Git commit.
 
+Each executable run writes an immutable manifest before training and an
+immutable result after completion. The manifest freezes the resolved
+environment and algorithm settings, protocol revision, seed, dependency
+versions, ROM identity, device, Git state, and required counters. Smoke presets
+exercise the same artifact pipeline but are permanently nonqualifying.
+
 Negative and inconclusive outcomes are first-class findings. Exclude a run only
 for a documented operational failure, never because its score is inconvenient.
+
+Qualifying runs must use a clean Git worktree, a declared game and seed, the
+qualifying preset, the complete budget, final-checkpoint selection, and every
+declared evaluation episode. Revision 1 does not permit resumed DQN runs to
+qualify because ALE and wrapper state cannot yet be restored bit-for-bit.
 
 ## Benchmark growth
 

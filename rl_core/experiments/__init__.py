@@ -31,7 +31,30 @@ Quick-start::
                     run.checkpoint(step=step, state_dicts=trainer.state_dicts())
 """
 
+from rl_core.experiments.artifacts import (
+    ArtifactValidationError,
+    ResultArtifact,
+    RunManifest,
+    artifact_digest,
+    utc_now,
+    write_immutable_json,
+)
 from rl_core.experiments.metrics import NamespacedLogger
+from rl_core.experiments.provenance import collect_provenance
+from rl_core.experiments.qualification import QualificationDecision, qualify_result
 from rl_core.experiments.run_manager import ExperimentRun, RunManager
 
-__all__ = ["ExperimentRun", "NamespacedLogger", "RunManager"]
+__all__ = [
+    "ArtifactValidationError",
+    "ExperimentRun",
+    "NamespacedLogger",
+    "QualificationDecision",
+    "ResultArtifact",
+    "RunManager",
+    "RunManifest",
+    "artifact_digest",
+    "collect_provenance",
+    "qualify_result",
+    "utc_now",
+    "write_immutable_json",
+]

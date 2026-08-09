@@ -1,0 +1,43 @@
+"""Dependency, ROM, and frozen-protocol checks before PPO compute."""
+
+from __future__ import annotations
+
+from dataclasses import asdict
+from pathlib import Path
+from typing import Any
+
+from rl_core.environments import AtariPreprocessingConfig, inspect_atari_environment, make_atari_environment
+from rl_core.reproductions import load_reproduction_spec
+from rl_core.reproductions.dqn_2015.preflight import EXPECTED_VERSIONS, PreflightError, _rom_digest
+
+
+def preflight_ppo_2017(papers_dir: Path = Path("papers")) -> dict[str, Any]:
+    """Open and step every declared PPO game, returning reviewable facts."""
+    # This shares only installed-package checks with DQN; PPO's protocol and
+    # output are independently frozen in its own paper directory.
+    from importlib.metadata import PackageNotFoundError, version
+
+    installed: dict[str, str] = {}
+    for package, expected in EXPECTED_VERSIONS.items():
+        try:
+            actual = version(package)
+        except PackageNotFoundError as error:
+            raise PreflightError(f"{package} is missing; run 'poetry install --with atari'") from error
+        if actual != expected:
+            raise PreflightError(f"{package}=={expected} required, found {actual}")
+        installed[package] = actual
+    spec = load_reproduction_spec(papers_dir / "ppo-2017" / "reproduction.yaml")
+    environments: list[dict[str, Any]] = []
+    for game in spec.protocol.games:
+        config = AtariPreprocessingConfig(env_id=game.id, seed=spec.seeds[0], terminal_on_life_loss=True)
+        environment = make_atari_environment(config)
+        try:
+            environment.reset(seed=spec.seeds[0])
+            environment.step(environment.action_space.sample())
+            info = inspect_atari_environment(environment, config)
+            if info.observation_shape != (4, 84, 84) or info.observation_dtype != "uint8":
+                raise PreflightError(f"{game.id} produced {info.observation_shape}/{info.observation_dtype}")
+            environments.append({**asdict(info), "rom_sha256": _rom_digest(game.id)})
+        finally:
+            environment.close()
+    return {"packages": installed, "protocol_revision": spec.protocol.version, "environments": environments}

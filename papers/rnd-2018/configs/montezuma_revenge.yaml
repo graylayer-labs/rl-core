@@ -1,0 +1,14 @@
+environment:
+  id: ALE/MontezumaRevenge-v5
+  frame_skip: 4
+  no_op_max: 30
+  sticky_actions: false
+training:
+  algorithm: PPO with Random Network Distillation
+  qualifying_environment_frames: 2000000000
+  intrinsic_discount: 0.99
+  reward_normalization: discounted_intrinsic_return_variance
+  predictor_target: fixed_random_network
+evaluation:
+  epsilon: 0.0
+  episodes: 100

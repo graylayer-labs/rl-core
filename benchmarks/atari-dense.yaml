@@ -1,0 +1,21 @@
+schema_version: 1
+key: atari-dense-v1
+title: Atari Dense-Reward Control
+description: Shared dense-control comparison track for value and policy-gradient methods.
+environments:
+  - ALE/BeamRider-v5
+  - ALE/Breakout-v5
+  - ALE/Pong-v5
+  - ALE/Seaquest-v5
+  - ALE/SpaceInvaders-v5
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: selected_actions
+  value: 10000000
+frame_skip: 4
+evaluation:
+  episodes: 30
+  max_raw_frames_per_episode: 18000
+metrics:
+  primary: human_normalized_score
+  report: [raw_return_mean, raw_return_std, human_normalized_score, wall_clock_seconds]

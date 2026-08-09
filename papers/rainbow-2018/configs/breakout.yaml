@@ -1,0 +1,8 @@
+environment_id: ALE/Breakout-v5
+protocol_version: 1
+training_agent_steps: 50000000
+training_raw_ale_frames: 200000000
+environment: {frameskip: 4, repeat_action_probability: 0.0, full_action_space: false, no_op_max: 30, screen_size: 84, grayscale_observation: true, frame_stack: 4, terminal_on_life_loss: true}
+components: {double_q: true, dueling: true, prioritized_replay: true, n_step: true, distributional: true, noisy: true}
+training: {gamma: 0.99, learning_rate: 0.0000625, optimizer: adam, adam_epsilon: 0.00015, replay_buffer_size: 1000000, learning_starts_agent_steps: 20000, train_frequency_agent_steps: 4, batch_size: 32, target_network_update_agent_steps: 8000, n_step: 3, priority_alpha: 0.5, priority_beta_initial: 0.4, priority_beta_final: 0.4, priority_beta_steps_agent_steps: 50000000, atom_count: 51, v_min: -10.0, v_max: 10.0, noisy_sigma_zero: 0.5, reward_clip: [-1.0, 1.0]}
+evaluation: {epsilon: 0.001, max_raw_ale_frames: 18000, no_op_max: 30}

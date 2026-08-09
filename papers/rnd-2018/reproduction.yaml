@@ -1,0 +1,41 @@
+schema_version: 1
+key: rnd-2018
+paper:
+  title: Exploration by Random Network Distillation
+  authors:
+    - Yuri Burda
+    - Harrison Edwards
+    - Amos Storkey
+    - Oleg Klimov
+  year: 2018
+  url: https://arxiv.org/abs/1810.12894
+algorithm: random_network_distillation
+implementation: rl_core.intrinsic.RNDModel
+implementation_kind: hybrid
+claim: >-
+  RND supplies a learning-progress novelty signal suitable for sparse-reward
+  Atari exploration when combined with the paper's PPO training system.
+original_testbed: Arcade Learning Environment
+status: planned
+seeds: [7, 42, 123, 2026, 9001]
+budget:
+  unit: environment_frames
+  value: 2000000000
+primary_metric: MontezumaRevenge evaluation return
+success_criterion: >-
+  Compare all declared seeds against a preregistered Montezuma's Revenge
+  reference after the complete PPO integration is available.
+deviations:
+  - This readiness track verifies RND math and artifacts but does not yet include the paper's distributed PPO learner.
+  - Atari runtime and ROM provenance are deferred to the full PPO integration.
+protocol:
+  version: 1
+  games:
+    - id: ALE/MontezumaRevenge-v5
+      config: configs/montezuma_revenge.yaml
+      random_score: 0.0
+      human_score: 4366.7
+      paper_score: 0.0
+  frame_skip: 4
+  no_op_max: 30
+  evaluation_epsilon: 0.0

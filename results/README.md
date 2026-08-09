@@ -15,3 +15,7 @@ same benchmark version. Missing, failed, and excluded runs must be documented.
 
 The leaderboard intentionally starts empty. Placeholder or hand-entered scores
 must not be presented as experimental evidence.
+
+`rl_core.results.leaderboard` generates rows only from completed artifacts whose
+track is explicitly `benchmark`. It rejects paper-reproduction artifacts and
+manifest digest mismatches.

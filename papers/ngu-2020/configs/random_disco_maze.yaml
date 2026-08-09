@@ -1,0 +1,14 @@
+environment:
+  id: RandomDiscoMaze-21x21-v1
+  size: 21
+  max_steps: 200
+  observation: uint8_rgb
+training:
+  episodic_memory_neighbors: 10
+  episodic_kernel_epsilon: 0.0001
+  episodic_cluster_distance: 0.008
+  controllable_embedding: inverse_dynamics
+  lifelong_variants: [random, rnd]
+evaluation:
+  metric: unique_cells_visited
+  episodes: 100
