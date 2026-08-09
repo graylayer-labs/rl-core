@@ -39,3 +39,7 @@ build-backend = "poetry.core.masonry.api"
 ruff = "^0.15.8"
 ty = "^0.0.26"
 pytest = "^9.0.2"
+
+[tool.ruff]
+extend-config = ["https://raw.githubusercontent.com/graylayer-labs/.github/main/ruff.toml"]
+target-version = "py311"
