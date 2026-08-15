@@ -2,6 +2,19 @@
 
 Paper: *Human-level control through deep reinforcement learning*
 
+## Why I chose this paper
+
+This is the starting point of the research arc. My personal motivation and the
+questions I brought to the paper still need to be written from my own notes;
+they will not be inferred from the implementation.
+
+## What the paper does
+
+DQN showed that a neural network could learn action values directly from Atari
+pixels across many games using one general training recipe. Experience replay,
+a separately updated target network, and carefully processed observations made
+that learning stable enough to work.
+
 ## Claim under test
 
 An agent trained directly from visual observations with experience replay and a
@@ -12,14 +25,14 @@ The first qualifying reproduction will use a declared Atari subset rather than
 silently generalizing from Classic Control. Classic Control remains a smoke and
 regression benchmark only.
 
-## Current status
+## My implementation
 
 **Planned.** A compact paper-specific implementation provides the replay,
 optimizer, and target-update semantics that maintained DQN libraries do not
 expose. The Atari dependency group and protocol are pinned, but qualifying runs
 do not yet exist. No reproduction claim is currently made.
 
-## Frozen protocol: revision 1
+## The reproduction experiment
 
 The qualifying subset is **Beam Rider, Breakout, Pong, Seaquest, and Space
 Invaders** (`ALE/*-v5`). These are the five games on which the paper reports
@@ -64,3 +77,14 @@ run is scheduled.
 
 See `reproduction.yaml` for the machine-validated protocol and `findings.md` for
 the eventual outcome.
+
+## What I learned
+
+This section will be written from the completed pilot and qualifying-run notes.
+The current smoke run establishes engineering behavior, not a scientific
+conclusion.
+
+## What comes next
+
+First, establish a credible learning signal in the fixed Pong pilot. Only then
+does it make sense to commit qualifying compute or compare DQN with Rainbow.
