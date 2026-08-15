@@ -1,5 +1,10 @@
 # RL Core
 
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+[![Poetry](https://img.shields.io/badge/packaging-poetry-lightblue.svg)](https://python-poetry.org/)
+[![PyTorch](https://img.shields.io/badge/deep--learning-pytorch-red.svg)](https://pytorch.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 **Do influential reinforcement-learning results survive contact with an
 independent implementation?**
 
@@ -23,19 +28,17 @@ This sequence builds the experimental foundation I need before investigating
 my own questions about agents that explore when rewards are sparse, deceptive,
 or absent.
 
-## Where the work stands
+## Paper Projects
 
-| Project | What exists | Evidence so far | Reproduction status |
-|---|---|---|---|
-| [DQN (2015)](papers/dqn-2015/README.md) | Paper-aligned Atari implementation and frozen protocol | ALE preflight and Pong smoke run | No qualifying results |
-| [Rainbow (2018)](papers/rainbow-2018/README.md) | Six-component implementation and Atari runner | Automated tests | Not run |
-| [PPO (2017)](papers/ppo-2017/README.md) | Clipped PPO with vectorized Atari collection | Automated tests | Not run |
-| [RND (2018)](papers/rnd-2018/README.md) | Intrinsic-reward components and protocol | Synthetic component checks | Atari learner incomplete |
-| [NGU (2020)](papers/ngu-2020/README.md) | Episodic/lifelong novelty mechanism study | Automated tests | Disco Maze study not run |
+Each paper has its own research journal documenting the learning process:
 
-**Implemented** means the code exists. **Validated** means the experiment
-machinery has been exercised. **Reproduced** is reserved for a completed
-protocol whose declared success criterion was met.
+- **[DQN (Mnih et al., 2015)](papers/dqn-2015/)** — Starting point: value learning from pixels
+- **[Rainbow (Hessel et al., 2018)](papers/rainbow-2018/)** — Six improvements combined and ablated
+- **[PPO (Schulman et al., 2017)](papers/ppo-2017/)** — Policy gradient alternative to value learning
+- **[RND (Burda et al., 2018)](papers/rnd-2018/)** — Intrinsic motivation via prediction error
+- **[NGU (Badia et al., 2020)](papers/ngu-2020/)** — Episodic and lifelong novelty combined
+
+Each paper's README documents: why it was chosen, what the paper does, implementation details, reproduction results (as they complete), and what was learned.
 
 ## Start with DQN
 
