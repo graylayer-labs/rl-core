@@ -38,7 +38,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.15.8"
 ty = "^0.0.26"
-pytest = "^9.0.2"
+pytest = "^9.0.3"
 
 [tool.poetry.group.atari.dependencies]
 # Kept optional because ALE ROMs and emulator dependencies are only needed for
