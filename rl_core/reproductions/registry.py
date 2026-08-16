@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 PreflightFunction = Callable[[], dict[str, Any]]
-RunFunction = Callable[[str, int, str, Path, str | None], Path]
+RunFunction = Callable[[str, int, int, Path, str | None], Path]
 
 
 @dataclass(frozen=True)
@@ -28,7 +28,7 @@ def _dqn() -> ReproductionWorkflow:
     return ReproductionWorkflow(
         "dqn-2015",
         preflight_dqn_2015,
-        lambda environment, seed, preset, runs_dir, _variant: run_dqn_2015(environment, seed, preset, runs_dir),
+        lambda environment, seed, agent_steps, runs_dir, _variant: run_dqn_2015(environment, seed, agent_steps, runs_dir),
     )
 
 
