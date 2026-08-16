@@ -21,7 +21,7 @@ from typing import Any, Self
 
 ARTIFACT_SCHEMA_VERSION = 1
 _TRACKS = frozenset({"benchmark", "paper_reproduction"})
-_PRESETS = frozenset({"smoke", "pilot", "qualifying"})
+_PRESETS = frozenset({"smoke", "exploration_10", "exploration_50", "pilot", "qualifying"})
 
 
 class ArtifactValidationError(ValueError):
