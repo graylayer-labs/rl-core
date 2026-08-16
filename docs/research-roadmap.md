@@ -47,8 +47,8 @@ a clean Git worktree and exact protocol/configuration digests.
   three of the five games across all five declared seeds.
 
 ```bash
-poetry run python -m rl_core.reproductions preflight dqn-2015
-poetry run python -m rl_core.reproductions run dqn-2015 \
+uv run python -m rl_core.reproductions preflight dqn-2015
+uv run python -m rl_core.reproductions run dqn-2015 \
   --preset pilot --environment ALE/Pong-v5 --seed 7
 ```
 
@@ -63,8 +63,8 @@ poetry run python -m rl_core.reproductions run dqn-2015 \
   three of the five games across all seeds.
 
 ```bash
-poetry run python -m rl_core.reproductions preflight rainbow-2018
-poetry run python -m rl_core.reproductions run rainbow-2018 \
+uv run python -m rl_core.reproductions preflight rainbow-2018
+uv run python -m rl_core.reproductions run rainbow-2018 \
   --preset pilot --environment ALE/Pong-v5 --seed 7
 ```
 
@@ -78,8 +78,8 @@ poetry run python -m rl_core.reproductions run rainbow-2018 \
   three of the five games across all seeds.
 
 ```bash
-poetry run python -m rl_core.reproductions preflight ppo-2017
-poetry run python -m rl_core.reproductions run ppo-2017 \
+uv run python -m rl_core.reproductions preflight ppo-2017
+uv run python -m rl_core.reproductions run ppo-2017 \
   --preset pilot --environment ALE/Pong-v5 --seed 7
 ```
 
@@ -94,8 +94,8 @@ poetry run python -m rl_core.reproductions run ppo-2017 \
   ROM provenance, room tracking, and the full preregistered budget are present.
 
 ```bash
-poetry run python -m rl_core.reproductions preflight rnd-2018
-poetry run python -m rl_core.reproductions run rnd-2018 \
+uv run python -m rl_core.reproductions preflight rnd-2018
+uv run python -m rl_core.reproductions run rnd-2018 \
   --preset smoke --environment ALE/MontezumaRevenge-v5 --seed 7
 ```
 
@@ -113,8 +113,8 @@ The current RND smoke is a component check, not an Atari reproduction result.
   Atari NGU agent.
 
 ```bash
-poetry run python -m rl_core.reproductions preflight ngu-2020
-poetry run python -m rl_core.reproductions run ngu-2020 \
+uv run python -m rl_core.reproductions preflight ngu-2020
+uv run python -m rl_core.reproductions run ngu-2020 \
   --preset pilot --environment RandomDiscoMaze-21x21-v1 \
   --seed 7 --variant rnd
 ```

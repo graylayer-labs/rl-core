@@ -16,8 +16,8 @@ site-packages/
 venv/
 env/
 
-# Poetry
-# poetry.lock is intentionally committed
+# Package management
+# uv.lock is intentionally committed
 
 # Type checking
 .mypy_cache/

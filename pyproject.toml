@@ -32,17 +32,18 @@ Issues = "https://github.com/graylayer-labs/rl-core/issues"
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.15.8"
-ty = "^0.0.26"
-pytest = "^9.0.2"
+[tool.hatch.build.targets.wheel]
+packages = ["rl_core"]
 
-[tool.poetry.group.atari.dependencies]
+[dependency-groups]
+dev = ["ruff>=0.15.8", "ty>=0.0.26", "pytest>=9.0.2"]
 # Kept optional because ALE ROMs and emulator dependencies are only needed for
 # Atari reproductions, not for the core library or its unit tests.
-gymnasium = {version = "==1.2.3", extras = ["atari", "accept-rom-license"]}
-ale-py = "==0.11.2"
-opencv-python-headless = "==4.13.0.92"
+atari = [
+    "gymnasium[atari,accept-rom-license]==1.2.3",
+    "ale-py==0.11.2",
+    "opencv-python-headless==4.13.0.92",
+]

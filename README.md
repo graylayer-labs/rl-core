@@ -1,7 +1,7 @@
 # RL Core
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
-[![Poetry](https://img.shields.io/badge/packaging-poetry-lightblue.svg)](https://python-poetry.org/)
+[![uv](https://img.shields.io/badge/packaging-uv-orange.svg)](https://docs.astral.sh/uv/)
 [![PyTorch](https://img.shields.io/badge/deep--learning-pytorch-red.svg)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -42,13 +42,13 @@ Each paper's README documents: why it was chosen, what the paper does, implement
 
 ## Start with DQN
 
-Python 3.12 and Poetry are required. Atari experiments also require compatible
+Python 3.12 and uv are required. Atari experiments also require compatible
 ALE ROMs.
 
 ```bash
-poetry install --with dev,atari
-poetry run python -m rl_core.reproductions preflight dqn-2015
-poetry run python -m rl_core.reproductions run dqn-2015 \
+uv sync --group dev --group atari
+uv run python -m rl_core.reproductions preflight dqn-2015
+uv run python -m rl_core.reproductions run dqn-2015 \
   --preset smoke --environment ALE/Pong-v5 --seed 7
 ```
 
