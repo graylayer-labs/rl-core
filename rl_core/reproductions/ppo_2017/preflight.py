@@ -22,7 +22,7 @@ def preflight_ppo_2017(papers_dir: Path = Path("papers")) -> dict[str, Any]:
         try:
             actual = version(package)
         except PackageNotFoundError as error:
-            raise PreflightError(f"{package} is missing; run 'poetry install --with atari'") from error
+            raise PreflightError(f"{package} is missing; run 'uv sync --group atari'") from error
         if actual != expected:
             raise PreflightError(f"{package}=={expected} required, found {actual}")
         installed[package] = actual
