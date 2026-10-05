@@ -39,7 +39,12 @@ build-backend = "hatchling.build"
 packages = ["rl_core"]
 
 [dependency-groups]
-dev = ["ruff>=0.15.8", "ty>=0.0.26", "pytest>=9.0.2"]
+dev = [
+    "ruff>=0.15.8",
+    "ty>=0.0.26",
+    "pytest>=9.0.2",
+    "psutil>=7.2.2",
+]
 # Kept optional because ALE ROMs and emulator dependencies are only needed for
 # Atari reproductions, not for the core library or its unit tests.
 atari = [

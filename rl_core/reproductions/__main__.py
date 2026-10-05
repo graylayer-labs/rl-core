@@ -24,7 +24,7 @@ def main() -> int:
     preflight.add_argument("key", choices=keys)
     run = subparsers.add_parser("run", help="run one declared paper experiment")
     run.add_argument("key", choices=keys)
-    run.add_argument("--preset", choices=("smoke", "pilot", "qualifying"), required=True)
+    run.add_argument("--agent-steps", type=int, required=True, help="total training steps to run")
     run.add_argument("--environment", required=True)
     run.add_argument("--seed", type=int, required=True)
     run.add_argument("--variant")
@@ -44,7 +44,7 @@ def main() -> int:
         workflow = get_reproduction_workflow(args.key)
         if args.variant and args.variant not in workflow.variants:
             parser.error(f"{args.key} variant must be one of: {', '.join(workflow.variants) or 'none'}")
-        run_dir = workflow.run(args.environment, args.seed, args.preset, args.runs_dir, args.variant)
+        run_dir = workflow.run(args.environment, args.seed, args.agent_steps, args.runs_dir, args.variant)
         print(f"completed: {run_dir}")
         return 0
 

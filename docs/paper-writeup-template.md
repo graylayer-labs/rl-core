@@ -1,52 +1,44 @@
-# Paper project title
+# Paper reproduction template
 
-> This is a writing guide, not a form to fill mechanically. Keep only the
-> sections that help tell the project’s actual story.
+**Tone:** Write as technical documentation, not a personal narrative. Remove "I", "my", "we". Assume reader understands RL basics. No marketing language or hype.
 
-## Why I chose this paper
+## Why this paper
 
-What did I want to understand? What was unclear before I began? Why does this
-paper belong at this point in the wider research arc?
+Why reproduce this work? What makes it foundational or necessary to understand? What algorithms build on it?
 
-This section must begin with the author’s own notes. An agent may edit them for
-clarity but should not invent motivation or learning on the author’s behalf.
+Keep it concise. No personal motivation needed—focus on the paper’s significance.
 
 ## What the paper does
 
-Explain the problem, central idea, and claimed evidence in your own words. Use
-one diagram, equation, or small piece of pseudocode only if it makes the idea
-materially easier to understand.
+Explain the problem, central idea, and key mechanisms in engineering terms. Use one diagram, equation, or pseudocode only if it materially clarifies the idea.
 
-## My implementation
+## Claim under test
 
-Describe the parts built, the consequential design choices, and the source
-files worth reading. State every deliberate deviation from the paper.
+State the paper’s core claim in one sentence. Example: "Algorithm X learns task Y from input Z and achieves performance > baseline."
 
-## The reproduction experiment
+## Implementation
 
-Summarize the claim under test, environments, seeds, compute budget, metric,
-and success criterion. Link to the machine-readable protocol for exact values.
+Reference the code location (`rl_core.integrations.AlgorithmName`). Describe key design choices and any deliberate deviations from the paper.
 
-## What happened
+## Reproduction experiment
 
-Lead with the result. Show learning curves, aggregate scores, uncertainty,
-runtime, and failures. Clearly label smoke tests, pilots, partial runs, and
-qualifying evidence.
+Link to `reproduction.yaml` for the frozen protocol. Summarize: testbed, seeds, compute budget, success criterion.
 
-If the experiment has not run, say so rather than filling this section with
-expected results.
+## Results
 
-## What I learned
+Lead with the result. Show learning curves, aggregate scores, uncertainty, and runtime. Clearly label each type of evidence: smoke test, pilot, partial run, or qualifying.
 
-Start from personal experiment notes:
+If the experiment hasn’t run, say so. Don’t fill this with expected results.
 
-- What surprised me?
-- Which detail mattered more than I expected?
-- What failed, and what did that expose?
-- What changed in my mental model?
+## Key insights
+
+What did the implementation reveal about the algorithm? What’s non-obvious?
+
+- What failed and what did that expose?
+- Which implementation detail mattered more than expected?
+- What assumptions from the paper held up?
 - What remains unresolved?
 
-## What comes next
+## Next steps
 
-Connect the result to the next experiment or paper. State which assumption,
-limitation, or unanswered question will drive the next step.
+What experiment or paper comes after this? State which assumption or unanswered question drives it.

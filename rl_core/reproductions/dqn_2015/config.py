@@ -20,7 +20,6 @@ class DQNRunConfig:
 
     environment_id: str
     seed: int
-    preset: str
     protocol_revision: int
     agent_steps: int
     raw_ale_frames: int
@@ -39,12 +38,10 @@ class DQNRunConfig:
 def load_dqn_run_config(
     environment_id: str,
     seed: int,
-    preset: str,
+    agent_steps: int,
     paper_dir: Path = PAPER_DIR,
 ) -> DQNRunConfig:
-    """Load a declared game config and apply the nonqualifying smoke budget."""
-    if preset not in {"smoke", "pilot", "qualifying"}:
-        raise ValueError("preset must be 'smoke', 'pilot', or 'qualifying'")
+    """Load a declared game config with specified agent step budget."""
     spec = load_reproduction_spec(paper_dir / "reproduction.yaml")
     if seed not in spec.seeds:
         raise ValueError(f"seed {seed} is not declared by the protocol")
@@ -56,31 +53,16 @@ def load_dqn_run_config(
     raw = yaml.safe_load(raw_text)
     training = raw["training"]
     evaluation = raw["evaluation"]
-    if preset == "qualifying":
-        agent_steps = int(raw["training_agent_steps"])
-        replay_capacity = int(training["replay_buffer_size"])
-        learning_starts = int(training["learning_starts_agent_steps"])
-        batch_size = int(training["batch_size"])
-        evaluation_episodes = 30
-        evaluation_max_agent_steps = int(evaluation["max_raw_ale_frames"]) // spec.protocol.frame_skip
-    elif preset == "pilot":
-        agent_steps = 1_000_000
-        replay_capacity = 250_000
-        learning_starts = int(training["learning_starts_agent_steps"])
-        batch_size = int(training["batch_size"])
-        evaluation_episodes = 10
-        evaluation_max_agent_steps = int(evaluation["max_raw_ale_frames"]) // spec.protocol.frame_skip
-    else:
-        agent_steps = 512
-        replay_capacity = 1_024
-        learning_starts = 32
-        batch_size = 32
-        evaluation_episodes = 2
-        evaluation_max_agent_steps = 100
+
+    replay_capacity = int(training["replay_buffer_size"])
+    learning_starts = int(training["learning_starts_agent_steps"])
+    batch_size = int(training["batch_size"])
+    evaluation_episodes = 30
+    evaluation_max_agent_steps = int(evaluation["max_raw_ale_frames"]) // spec.protocol.frame_skip
+
     return DQNRunConfig(
         environment_id=environment_id,
         seed=seed,
-        preset=preset,
         protocol_revision=spec.protocol.version,
         agent_steps=agent_steps,
         raw_ale_frames=agent_steps * spec.protocol.frame_skip,
