@@ -1,0 +1,30 @@
+# DQN 2015 Paper Reproduction — Full Qualifying Matrix
+# 5 games × 5 seeds × 50M steps = 25 runs
+# This is the official reproduction protocol.
+
+protocol:
+  paper: "Deep Reinforcement Learning with Double Q-learning (Mnih et al., 2015)"
+  budget_agent_steps: 50000000
+  budget_label: "50M"
+  description: "Full paper reproduction with 30 evaluation episodes per run"
+
+games:
+  - ALE/BeamRider-v5
+  - ALE/Breakout-v5
+  - ALE/Pong-v5
+  - ALE/Seaquest-v5
+  - ALE/SpaceInvaders-v5
+
+seeds:
+  - 7
+  - 42
+  - 123
+  - 2026
+  - 9001
+
+matrix:
+  runs: 25
+  expected_wall_time_per_run_hours: 73
+  expected_total_time_sequential_days: 77
+  checkpoint_interval_steps: 5000000
+  evaluation_episodes: 30
