@@ -47,3 +47,8 @@ atari = [
     "ale-py==0.11.2",
     "opencv-python-headless==4.13.0.92",
 ]
+
+[tool.ty.analysis]
+# Optional Atari dependencies (dependency group `atari`), imported lazily
+# and not installed for unit tests or CI.
+allowed-unresolved-imports = ["ale_py", "gymnasium"]
