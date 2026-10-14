@@ -5,3 +5,8 @@ python-version = "3.12"
 # unresolved-import: suppress for optional heavy deps (wandb) that may not be
 # installed in CI. All other rules remain at their defaults.
 unresolved-import = "warn"
+
+[analysis]
+# Optional Atari dependencies (dependency group `atari`), imported lazily
+# and not installed for unit tests or CI.
+allowed-unresolved-imports = ["ale_py", "gymnasium"]
