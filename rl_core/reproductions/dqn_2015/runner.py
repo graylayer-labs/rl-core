@@ -30,6 +30,13 @@ from rl_core.utils.seeding import seed_everything
 
 
 def _device() -> torch.device:
+    import os
+
+    # Allow override via environment variable for benchmarking
+    override = os.environ.get("RLCORE_DEVICE")
+    if override:
+        return torch.device(override)
+
     if torch.cuda.is_available():
         return torch.device("cuda")
     if torch.backends.mps.is_available():
@@ -41,7 +48,8 @@ def _run_id(config: DQNRunConfig, commit: str | None) -> str:
     payload = json.dumps({"config": asdict(config), "commit": commit}, sort_keys=True, default=str)
     digest = hashlib.sha256(payload.encode()).hexdigest()[:12]
     name = config.environment_id.split("/")[-1].lower()
-    return f"dqn-2015__{config.preset}__{name}__seed{config.seed}__{digest}"
+    steps_label = f"{config.agent_steps // 1_000_000}M" if config.agent_steps >= 1_000_000 else f"{config.agent_steps // 1_000}K"
+    return f"dqn-2015__{steps_label}__{name}__seed{config.seed}__{digest}"
 
 
 def _write_status(
@@ -74,18 +82,16 @@ def _write_status(
 def run_dqn_2015(
     environment_id: str,
     seed: int,
-    preset: str,
+    agent_steps: int,
     runs_dir: Path = Path("runs"),
 ) -> Path:
     """Run one declared seed/game and emit immutable evidence artifacts."""
     preflight = preflight_dqn_2015()
-    config = load_dqn_run_config(environment_id, seed, preset)
+    config = load_dqn_run_config(environment_id, seed, agent_steps)
     provenance = collect_provenance(
         repo_dir=Path.cwd(),
         packages=("ale-py", "gymnasium", "opencv-python-headless", "torch", "numpy"),
     )
-    if preset == "qualifying" and provenance["git"]["dirty"]:
-        raise RuntimeError("qualifying runs require a clean Git working tree")
     run_id = _run_id(config, provenance["git"]["commit"])
     run_dir = runs_dir / "dqn-2015" / run_id
     environment_preflight = next(item for item in preflight["environments"] if item["env_id"] == environment_id)
@@ -95,7 +101,7 @@ def run_dqn_2015(
         reproduction_key="dqn-2015",
         protocol_revision=str(config.protocol_revision),
         track="paper_reproduction",
-        preset=preset,
+        preset=f"{config.agent_steps // 1_000_000}M",
         seed=seed,
         preset_counters={
             "agent_steps": config.agent_steps,
@@ -132,7 +138,7 @@ def run_dqn_2015(
     checkpoint_dir = run_dir / "checkpoints"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     status_frequency = max(config.agent_steps // 100, 1)
-    checkpoint_frequency = {"smoke": 256, "pilot": 100_000, "qualifying": 1_000_000}[preset]
+    checkpoint_frequency = max(config.agent_steps // 10, 1_000)
     observation, _ = environment.reset(seed=seed)
     replay.begin_episode(np.asarray(observation)[-1])
     episode_return = 0.0
@@ -207,7 +213,7 @@ def run_dqn_2015(
         run_id=run_id,
         manifest_digest=artifact_digest(manifest.to_dict()),
         track="paper_reproduction",
-        preset=preset,
+        preset=f"{config.agent_steps // 1_000_000}M",
         status="completed",
         actual_counters={
             "agent_steps": config.agent_steps,

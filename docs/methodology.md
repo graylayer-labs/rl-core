@@ -84,6 +84,42 @@ qualifying preset, the complete budget, final-checkpoint selection, and every
 declared evaluation episode. Revision 1 does not permit resumed DQN runs to
 qualify because ALE and wrapper state cannot yet be restored bit-for-bit.
 
+## Development: Incremental partial runs
+
+Before committing to full qualifying runs, develop understanding via incremental
+partial training across all declared environments. This approach surfaces
+learning dynamics, environment-specific behavior, and anomalies early.
+
+**Process:**
+
+1. **10% budget runs** (e.g., 100K/1M steps): All declared environments, seed 7.
+   - Verify infrastructure works, training starts, no crashes.
+   - Capture initial learning signal and divergence patterns.
+   
+2. **Analysis checkpoint**: Inspect learning curves, per-environment behavior,
+   reward variance. Document observations in `findings.md`.
+   - Which environments converge quickly? Which stagnate?
+   - Are there anomalies in specific games?
+   - Does the algorithm learn meaningfully from zero?
+
+3. **50% budget runs**: All environments, seed 7.
+   - Verify patterns persist at scale.
+   - Identify if early anomalies resolve or worsen.
+   - Discuss: how does midtraining behavior compare to early phase?
+
+4. **100% budget runs** (qualifying): All declared seeds and environments.
+   - Execute the full preregistered protocol.
+   - Cross-reference partial-run observations against final results.
+
+**Checkpointing:** Save intermediate checkpoints at each stage (10%, 50%, 100%).
+Permits resumed training and lets you inspect learned representations at
+different depths.
+
+**Live commentary:** After each stage, update `findings.md` with observed
+patterns. Treat training as a time-series event: anomalies, convergence speed,
+environment sensitivity, and algorithm stability are primary insights, not
+afterthoughts.
+
 ## Benchmark growth
 
 Benchmark tracks stay deliberately small. Add an environment when it tests a

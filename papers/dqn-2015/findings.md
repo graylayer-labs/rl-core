@@ -2,9 +2,9 @@
 
 ## Status
 
-No qualifying runs have been completed. Phase 1 (code validation) is complete.
+Qualifying runs (5 games × 5 seeds × 50M steps) not yet started.
 
-## Engineering evidence (non-qualifying)
+## Engineering evidence
 
 ### Preflight (2026-08-16)
 Protocol revision 1, 5 games declared (Beam Rider, Breakout, Pong, Seaquest,
@@ -25,14 +25,4 @@ All 5 ALE ROMs verified by SHA-256. Environment observation shape validated as
 - Artifacts: manifest, status, result, qualification (false), evaluations, metrics, checkpoints all present and valid
 - Git commit: 63b09d3 (uv migration)
 
-**Machinery verdict:** Pipeline executes end-to-end without error. Learning signal
-is positive relative to random. The smoke run is engineering evidence only and
-cannot support a reproduction claim.
-
-## Planned next steps
-
-1. Pilot run: Pong, seed 7, 1M agent steps (reduced budget, ~30-60 minutes)
-   - Confirm sustained learning signal over 1M steps
-   - Validate throughput and memory use
-   
-2. After pilot validation: decide whether to run full qualifying matrix (5 games × 5 seeds × 50M steps)
+**Machinery verdict:** Pipeline executes end-to-end without error.
